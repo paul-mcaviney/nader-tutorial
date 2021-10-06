@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
+import './App.css';
 import Greeter from './artifacts/contracts/Greeter.sol/Greeter.json';
 
-const greeterAddres = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+const greeterAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 
 function App() {
@@ -10,11 +11,17 @@ function App() {
 
   async function requestAccount() {
 
+    // Button tutorial - https://docs.metamask.io/guide/create-dapp.html#basic-action-part-1
+
     // request account info from metamask wallet
     // will prompt user to connect their wallet if haven't already
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-
-  }
+    try{
+        await window.ethereum.request({ method:'eth_requestAccounts' });
+    } catch (err) {
+        console.log(err);
+    }
+    
+    }
 
 
   async function fetchGreeting() {
@@ -44,8 +51,9 @@ function App() {
         const signer = provider.getSigner(); //  signer is used to sign the transaction
         const contract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
         const transaction = await contract.setGreeting(greeting);
+        setGreetingValue('');
 
-        await transaction.wait(); // wait for the transaction to be updated on the network
+        await transaction.wait(); // wait for the transaction to be confirmed on the blockchain
 
         fetchGreeting();
     }
@@ -55,9 +63,14 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        
-        
-
+        <button onClick={requestAccount}>Connect Wallet</button>
+        <button onClick={fetchGreeting}>Fetch Greeting</button>
+        <button onClick={setGreeting}>Set Greeting</button>        
+        <input 
+            onChange={e => setGreetingValue(e.target.value)} 
+            placeholder="Set greeting" 
+            value={greeting}
+        />
       </header>
     </div>
   );
