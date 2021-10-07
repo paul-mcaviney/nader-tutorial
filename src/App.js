@@ -7,7 +7,7 @@ const greeterAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
 
 function App() {
-  const [greeting, setGreetingValue] = useState();
+  const [greeting, setGreetingValue] = useState('');
 
   async function requestAccount() {
 
@@ -51,7 +51,7 @@ function App() {
         const signer = provider.getSigner(); //  signer is used to sign the transaction
         const contract = new ethers.Contract(greeterAddress, Greeter.abi, signer);
         const transaction = await contract.setGreeting(greeting);
-        setGreetingValue('');
+        // setGreetingValue('');
 
         await transaction.wait(); // wait for the transaction to be confirmed on the blockchain
 
